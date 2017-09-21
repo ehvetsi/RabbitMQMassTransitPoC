@@ -2,9 +2,9 @@
 
 namespace Contracts
 {
-  public interface SomethingHappened
-  {
-    string What { get; }
-    DateTime When { get; }
-  }
+    public interface ISomethingHappened
+    {
+        string What { get; }
+        DateTime When { get; }
+    }
 }

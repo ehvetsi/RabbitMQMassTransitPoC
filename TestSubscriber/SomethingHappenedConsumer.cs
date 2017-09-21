@@ -5,15 +5,12 @@ using MassTransit;
 
 namespace TestSubscriber
 {
-  class SomethingHappenedConsumer : IConsumer<SomethingHappened>
-  {
-    public Task Consume(ConsumeContext<SomethingHappened> context)
+    internal class SomethingHappenedConsumer : IConsumer<ICloudMessage>
     {
-      Console.Write("TXT: " + context.Message.What);
-      Console.Write("  SENT: " + context.Message.When);
-      Console.Write("  PROCESSED: " + DateTime.Now);
-      Console.WriteLine(" (" + System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
-      return Task.FromResult(0);
+        public Task Consume(ConsumeContext<ICloudMessage> context)
+        {
+            Console.WriteLine("Instance Id: " + context.Message.InstanceId);
+            return Task.FromResult(0);
+        }
     }
-  }
 }

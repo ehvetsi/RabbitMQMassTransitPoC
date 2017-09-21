@@ -5,29 +5,38 @@ using MassTransit.Log4NetIntegration.Logging;
 
 namespace TestPublisher
 {
-  class Program
-  {
-    static void Main(string[] args)
+    internal class Program
     {
-      Log4NetLogger.Use();
-      var bus = Bus.Factory.CreateUsingRabbitMq(x => 
-        x.Host(new Uri("rabbitmq://localhost/"), h => { }));
-      var busHandle = bus.Start();
-      var text = "";
-
-      while (text != "quit")
-      {
-        Console.Write("Enter a message: ");
-        text = Console.ReadLine();
-
-        var message = new SomethingHappenedMessage()
+        private static void Main(string[] args)
         {
-          What = text, When = DateTime.Now
-        };
-        bus.Publish<SomethingHappened>(message);
-      }
+            Log4NetLogger.Use();
+            var bus = Bus.Factory.CreateUsingRabbitMq(x =>
+              x.Host(new Uri("rabbitmq://localhost/"), h =>
+              {
+              }));
+            var busHandle = bus.Start();
+            var text = "";
 
-      busHandle.Stop().Wait();
+            while (text != "quit")
+            {
+                Console.Write("Enter a message: ");
+                text = Console.ReadLine();
+
+                var message = new SomethingHappenedMessage()
+                {
+                    What = text,
+                    When = DateTime.Now
+                };
+
+                var cloudMessage = new CloudMessage()
+                {
+                    InstanceId = text
+                };
+                bus.Publish<ICloudMessage>(cloudMessage);
+                //bus.Publish<ISomethingHappened>(message);
+            }
+
+            busHandle.Stop().Wait();
+        }
     }
-  }
 }
